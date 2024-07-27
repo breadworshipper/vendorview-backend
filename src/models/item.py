@@ -11,3 +11,4 @@ class Item(Base):
     description = Column(String)
     price = Column(Float)
     street_vendor = Column(ForeignKey("street_vendors.user"))
+    image_base64 = Column(String)
