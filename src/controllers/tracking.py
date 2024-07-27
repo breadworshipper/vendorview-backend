@@ -6,6 +6,7 @@ import json
 from redis import Redis
 
 from src.database import get_redis
+from src.models.auth import StreetVendorCategoryEnum
 from src.schemas.tracking import Coordinates
 from src.utils.tracking import add_coordinates, get_nearby
 
@@ -64,11 +65,11 @@ async def user_websocket(websocket: WebSocket):
 
 @router.get("/seed-coordinates")
 async def seed_coordinates(rd: redis.Redis = Depends(get_redis)):
-    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9842, "Vendor 1")
-    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9843, "Vendor 2")
-    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9844, "Vendor 3")
-    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9845, "Vendor 4")
-    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9846, "Vendor 5")
+    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9842, "Vendor 1", StreetVendorCategoryEnum.makanan_dan_minuman)
+    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9843, "Vendor 2", StreetVendorCategoryEnum.pakaian_dan_aksesoris)
+    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9844, "Vendor 3", StreetVendorCategoryEnum.buah_dan_sayuran)
+    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9845, "Vendor 4", StreetVendorCategoryEnum.barang_bekas_dan_barang_antik)
+    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9846, "Vendor 5", StreetVendorCategoryEnum.mainan_anak_anak)
     return {"message": "Coordinates seeded successfully"}
 
 
