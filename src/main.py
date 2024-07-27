@@ -1,3 +1,5 @@
+from fastapi import FastAPI
+from src.controllers.tracking import router as tracking_router
 import os
 
 from fastapi import FastAPI, Request
@@ -9,6 +11,7 @@ from pydantic import BaseModel
 from src.controllers.auth import auth_router
 
 app = FastAPI()
+app.include_router(tracking_router)
 app.include_router(auth_router)
 
 @app.get("/")
