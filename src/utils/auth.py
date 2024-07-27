@@ -51,11 +51,11 @@ def decode_token(token: str):
         return "Invalid token"
     
 def create_user(user: UserCreate, db: Session):
-    user_instance = User(**user)
+    user_instance = User(**user.dict())
     db.add(user_instance)
     db.commit()
-    db.refresh(user)
-    return user
+    db.refresh(user_instance)
+    return user_instance
 
 
 def get_user(id: str, db: Session):
