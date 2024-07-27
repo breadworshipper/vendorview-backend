@@ -9,6 +9,7 @@ ARG ENV_FILE
 # Ensure the src directory is copied correctly
 COPY ./src /app/src
 # COPY .env /app/.env
+RUN echo "LOOK HERE"
 RUN echo "$ENV_FILE" | base64 -d > .env
 
 # # In GitHub Actions, make .env file and insert the environment variables
