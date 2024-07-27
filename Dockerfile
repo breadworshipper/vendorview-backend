@@ -12,8 +12,8 @@ COPY ./src /app/src
 # RUN echo "DATABASE_URL=${DATABASE_URL}" >> /app/.env && \
 #     echo "JWT_SECRET=${JWT_SECRET}" >> /app/.env
 
-ENV DATABASE_URL=${DATABASE_URL}
-ENV JWT_SECRET=${JWT_SECRET}
+# ENV DATABASE_URL=${DATABASE_URL}
+# ENV JWT_SECRET=${JWT_SECRET}
 
 # Set the working directory
 WORKDIR /app
@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y redis-server
 # COPY redis.conf /usr/local/etc/redis/redis.conf
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /app   
 
 # Start both Redis and Uvicorn
 CMD service redis-server start && uvicorn src.main:app --host 0.0.0.0 --port 80
