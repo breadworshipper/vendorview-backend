@@ -20,6 +20,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 from src.database import Base
 from src.models.auth import User, StreetVendor
+from src.models.item import Item
 
 target_metadata = Base.metadata
 
