@@ -31,7 +31,7 @@ jobs:
       with:
         context: .
         push: ${{ github.event_name == 'push' }}
-        tags: ${{ secrets.DOCKER_USERNAME }}/nahiar:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/vendorview:latest
         build-args: |
           DATABASE_URL=${{ secrets.DATABASE_URL }}
           JWT_SECRET=${{ secrets.JWT_SECRET }}
@@ -46,7 +46,7 @@ jobs:
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         port: 22
         script: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/ccrefrigeratorapi:latest
-          docker stop cc-refrigerator-api || true
-          docker rm cc-refrigerator-api || true
-          docker run -d --name cc-refrigerator-api -p 80:3000 ${{ secrets.DOCKER_USERNAME }}/ccrefrigeratorapi:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vendorview:latest
+          sudo docker rm -f vendor-view-backend
+          sudo docker run -d -p 30001:80 --name vendor-view-backend nahiar/vendorview:latest
+
