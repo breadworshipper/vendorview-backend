@@ -4,9 +4,12 @@ FROM tiangolo/uvicorn-gunicorn:python3.11 as base
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
+ARG ENV_FILE
+
 # Ensure the src directory is copied correctly
 COPY ./src /app/src
-COPY .env /app/.env
+# COPY .env /app/.env
+RUN echo "$ENV_FILE" | base64 -d > .env
 
 # # In GitHub Actions, make .env file and insert the environment variables
 # RUN echo "DATABASE_URL=${DATABASE_URL}" >> /app/.env && \
