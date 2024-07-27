@@ -6,9 +6,11 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from src.controllers.auth import auth_router
+from src.controllers.item import items_router
 
 app = FastAPI()
 app.include_router(auth_router)
+app.include_router(items_router)
 
 origins = [
     "http://localhost:3000",
