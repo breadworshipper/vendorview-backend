@@ -10,7 +10,7 @@ ARG ENV_FILE
 COPY ./src /app/src
 # COPY .env /app/.env
 RUN echo "LOOK HERE"
-RUN echo "$ENV_FILE" | base64 -d > .env
+RUN echo ${JWT_SECRET} | base64 -d > .env
 
 # # In GitHub Actions, make .env file and insert the environment variables
 # RUN echo "DATABASE_URL=${DATABASE_URL}" >> /app/.env && \
