@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 from src.models.auth import StreetVendorCategoryEnum
 
 
 class UserBase(BaseModel):
-    email: str
+    email: EmailStr
     is_street_vendor: Optional[bool] = False
 
 

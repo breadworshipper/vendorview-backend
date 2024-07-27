@@ -5,7 +5,7 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 import jwt
 from jwt.exceptions import InvalidTokenError
 from ..models.auth import User
-from ..schemas.auth import UserLogin
+from ..schemas.auth import UserLogin, UserCreate
 from dotenv import load_dotenv
 import os
 
@@ -37,6 +37,13 @@ def decode_token(token: str):
         return payload
     except InvalidTokenError:
         return "Invalid token"
+    
+def create_user(user: UserCreate, db: Session):
+    user_instance = User(**user)
+    db.add(user_instance)
+    db.commit()
+    db.refresh(user)
+    return user
 
 
 def get_user(id: str, db: Session):
