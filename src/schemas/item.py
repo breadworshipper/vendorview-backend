@@ -11,6 +11,18 @@ class Item(BaseModel):
     image_base64: Optional[str] = ""
 
 
+class ItemUpdate(BaseModel):
+    id: int
+    name: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    image_base64: Optional[str] = None
+
+
+class ItemUpdateRequest(BaseModel):
+    items: list[ItemUpdate]
+
+
 class ItemCreateRequest(BaseModel):
     items: list[Item]
 
