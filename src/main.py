@@ -1,3 +1,4 @@
+import redis
 from fastapi import FastAPI
 from src.controllers.tracking import router as tracking_router
 import os
@@ -9,22 +10,27 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 from pydantic import BaseModel
 
 from src.controllers.auth import auth_router
+from src.database import pool
 
 app = FastAPI()
 app.include_router(tracking_router)
 app.include_router(auth_router)
 
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
+
 class Settings(BaseModel):
     authjwt_secret_key: str = os.getenv("JWT_SECRET")
+
 
 # callback to get your configuration
 @AuthJWT.load_config
 def get_config():
     return Settings()
+
 
 # exception handler for authjwt
 # in production, you can tweak performance using orjson response

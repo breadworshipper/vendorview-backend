@@ -1,10 +1,18 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+import redis
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 from typing import Dict, List
 import json
+
+from redis import Redis
+
+from src.database import get_redis
+from src.schemas.tracking import Coordinates
+from src.utils.tracking import add_coordinates, get_nearby
 
 router = APIRouter(prefix="/api/v1/tracking")
 
 active_connections: Dict[str, List[WebSocket]] = {"street_vendor_room": [], "user_room": []}
+
 
 @router.websocket("/street-vendor")
 async def street_vendor_websocket(websocket: WebSocket):
@@ -38,9 +46,10 @@ async def street_vendor_websocket(websocket: WebSocket):
         await websocket.send_text(f"Error : {e.message}")
         await websocket.close()
 
+
 @router.websocket("/user")
 async def user_websocket(websocket: WebSocket):
-    try: 
+    try:
         # Authorize here
 
         active_connections["user_room"].append(websocket)
@@ -53,5 +62,16 @@ async def user_websocket(websocket: WebSocket):
         await websocket.close()
 
 
+@router.get("/seed-coordinates")
+async def seed_coordinates(rd: redis.Redis = Depends(get_redis)):
+    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9842, "Vendor 1")
+    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9843, "Vendor 2")
+    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9844, "Vendor 3")
+    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9845, "Vendor 4")
+    add_coordinates(rd, "street_vendor_locations", 14.5995, 120.9846, "Vendor 5")
+    return {"message": "Coordinates seeded successfully"}
 
-        
+
+@router.post("/get-nearby")
+async def get_nearby_vendors(coordinates: Coordinates, rd: Redis = Depends(get_redis)):
+    return get_nearby(rd, "street_vendor_locations", coordinates.lat, coordinates.lon, 20)
