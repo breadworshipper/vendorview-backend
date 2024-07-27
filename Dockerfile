@@ -8,9 +8,12 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 COPY ./src /app/src
 # COPY .env /app/.env
 
-# In GitHub Actions, make .env file and insert the environment variables
-RUN echo "DATABASE_URL=${DATABASE_URL}" >> /app/.env && \
-    echo "JWT_SECRET=${JWT_SECRET}" >> /app/.env
+# # In GitHub Actions, make .env file and insert the environment variables
+# RUN echo "DATABASE_URL=${DATABASE_URL}" >> /app/.env && \
+#     echo "JWT_SECRET=${JWT_SECRET}" >> /app/.env
+
+ENV DATABASE_URL=${DATABASE_URL}
+ENV JWT_SECRET=${JWT_SECRET}
 
 # Set the working directory
 WORKDIR /app
