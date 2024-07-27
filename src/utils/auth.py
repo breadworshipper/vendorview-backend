@@ -52,6 +52,7 @@ def decode_token(token: str):
     
 def create_user(user: UserCreate, db: Session):
     user_instance = User(**user.dict())
+    user_instance.password = hash_password(user.password)
     db.add(user_instance)
     db.commit()
     db.refresh(user_instance)
