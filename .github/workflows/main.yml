@@ -48,7 +48,5 @@ jobs:
         script: |
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vendorview:latest
           sudo docker rm -f vendor-view-backend
-          sudo docker run -d -p 30001:80 --name vendor-view-backend nahiar/vendorview:latest \
-              -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
-              -e JWT_SECRET=${{ secrets.JWT_SECRET }} 
+          sudo docker run -d -p 30001:80 --name vendor-view-backend nahiar/vendorview:latest
 
