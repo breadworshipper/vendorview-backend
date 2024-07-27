@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from src.database import get_db
 from src.schemas.auth import UserCreate, UserLogin, StreetVendorCreate
-from src.services.auth import register_user_service, login_user_service, register_vendor_service
+from src.services.auth import register_user_service, login_user_service, register_vendor_service, get_current_user
 
 auth_router = APIRouter(prefix="/api/v1/auth")
 
@@ -22,3 +22,7 @@ def login_user(user: UserLogin, db: Session = Depends(get_db), authorize: AuthJW
 @auth_router.post("/register-vendor")
 def register_vendor(vendor: StreetVendorCreate, db: Session = Depends(get_db)):
     return register_vendor_service(vendor, db)
+
+@auth_router.get("/get-current-user")
+def get_current_user_route(db: Session = Depends(get_db), authorize: AuthJWT = Depends()):
+    return get_current_user(db, authorize)

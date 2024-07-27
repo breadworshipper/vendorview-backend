@@ -2,10 +2,11 @@ from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
+from fastapi_jwt_auth.exceptions import AuthJWTException
 
 from src.models.auth import User, StreetVendor
 from src.schemas.auth import UserCreate, UserLogin, StreetVendorCreate
-from src.utils.auth import hash_password, create_access_token, verify_password, get_user_by_email, create_user
+from src.utils.auth import hash_password, create_access_token, verify_password, get_user_by_email, create_user, decode_token, get_user
 
 
 def register_user_service(user: UserCreate, db: Session):
@@ -57,3 +58,14 @@ def login_user_service(user: UserLogin, db: Session, authorize: AuthJWT):
         return JSONResponse(status_code=200, content={"access_token": create_access_token(user, authorize, db)})
     else:
         return JSONResponse(status_code=401, content={"message": "Bad credentials"})
+    
+def get_current_user(db: Session, authorize: AuthJWT):
+    try:
+        authorize.jwt_required()
+        token = authorize.get_raw_jwt()
+        user = get_user(token['sub'], db) 
+
+        return JSONResponse(status_code=200, content={"id": user.id, "email": user.email, "name": user.name, "is_street_vendor": user.is_street_vendor})
+
+    except AuthJWTException as e:
+        return JSONResponse(status_code=401, content={"message": e.message})
