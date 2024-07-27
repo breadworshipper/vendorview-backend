@@ -1,5 +1,6 @@
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
+from starlette.responses import JSONResponse
 
 from src.models.item import Item
 from src.schemas.item import ItemCreateRequest, ItemUpdateRequest
@@ -14,7 +15,8 @@ def create_items_service(items: ItemCreateRequest, db: Session):
                 db.add(item_instance)
             db.commit()  # Commit the transaction
 
-        return items
+        return JSONResponse(status_code=201, content={"message": "Items created successfully",
+                                                      "items created": [item.dict() for item in items.items]})
 
     except SQLAlchemyError as e:
         db.rollback()  # Rollback the transaction on error
@@ -30,7 +32,8 @@ def update_items_service(items: ItemUpdateRequest, db: Session):
                 db.query(Item).filter(Item.id == item.id).update(update_data)
             db.commit()  # Commit the transaction
 
-        return items
+        return JSONResponse(status_code=200, content={"message": "Items updated successfully",
+                                                      "items updated": [item.id for item in items.items]})
 
     except SQLAlchemyError as e:
         db.rollback()  # Rollback the transaction on error
@@ -48,7 +51,8 @@ def delete_items_batch_service(items: list[int], db: Session):
             db.query(Item).filter(Item.id.in_(items)).delete(synchronize_session=False)
             db.commit()  # Commit the transaction
 
-        return items
+        return JSONResponse(status_code=200, content={"message": "Items deleted successfully",
+                                                      "items deleted": items})
 
     except SQLAlchemyError as e:
         db.rollback()  # Rollback the transaction on error
