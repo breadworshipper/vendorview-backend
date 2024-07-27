@@ -4,13 +4,16 @@ FROM tiangolo/uvicorn-gunicorn:python3.11 as base
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-ARG ENV_FILE
+ARG DATABASE_URL
+ARG JWT_SECRET
+
+ENV DATABASE_URL=${DATABASE_URL}
+ENV JWT_SECRET=${JWT_SECRET}
 
 # Ensure the src directory is copied correctly
 COPY ./src /app/src
 # COPY .env /app/.env
 RUN echo "LOOK HERE"
-RUN echo ${JWT_SECRET} | base64 -d > .env
 
 # # In GitHub Actions, make .env file and insert the environment variables
 # RUN echo "DATABASE_URL=${DATABASE_URL}" >> /app/.env && \
