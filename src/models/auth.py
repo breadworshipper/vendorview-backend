@@ -3,6 +3,7 @@ from sqlalchemy.sql import func
 from ..database import Base
 import enum
 
+
 class StreetVendorCategoryEnum(enum.Enum):
     makanan_dan_minuman = 1
     pakaian_dan_aksesoris = 2
@@ -15,6 +16,7 @@ class StreetVendorCategoryEnum(enum.Enum):
     peralatan_rumah_tangga = 9
     barang_elektronik = 10
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -25,9 +27,10 @@ class User(Base):
     is_street_vendor = Column(Boolean, default=False, nullable=False)
     date_created = Column(DateTime(timezone=True), server_default=func.now())
 
+
 class StreetVendor(Base):
     __tablename__ = "street_vendors"
-    
+
     user = Column(ForeignKey("users.id"), primary_key=True)
     street_vendor_name = Column(String)
     street_vendor_category = Column(SQLAlchemyEnum(StreetVendorCategoryEnum, name="street_vendor_category_enum"))

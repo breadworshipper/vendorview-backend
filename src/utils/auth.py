@@ -27,7 +27,10 @@ def hash_password(password):
 
 def create_access_token(user: UserLogin, Authorize: AuthJWT, db: Session):
     user = get_user_by_email(user.email, db)
-    return Authorize.create_access_token(subject=user.id)
+    print(SECRET_KEY)
+    return Authorize.create_access_token(subject=user.id, user_claims={
+        "is_street_vendor": user.is_street_vendor
+    })
 
 
 def decode_token(token: str):

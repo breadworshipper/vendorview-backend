@@ -1,7 +1,7 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, ForeignKey, Integer, String, Float
+
 from ..database import Base
-from .auth import StreetVendor
+
 
 class Item(Base):
     __tablename__ = "items"
