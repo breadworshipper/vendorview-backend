@@ -4,7 +4,7 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 import jwt
 from jwt.exceptions import InvalidTokenError
-from ..models.auth import User
+from ..models.auth import User, StreetVendor
 from ..schemas.auth import UserLogin, UserCreate
 from dotenv import load_dotenv
 import os
@@ -27,7 +27,16 @@ def hash_password(password):
 
 def create_access_token(user: UserLogin, Authorize: AuthJWT, db: Session):
     user = get_user_by_email(user.email, db)
-    print(SECRET_KEY)
+    if user.is_street_vendor:
+        street_vendor = get_street_vendor_by_id(user.id, db)
+        return Authorize.create_access_token(subject=street_vendor.user, user_claims={
+            "is_street_vendor": user.is_street_vendor,
+            "name": user.name,
+            "street_vendor": {
+                "street_vendor_name": street_vendor.street_vendor_name,
+                "street_vendor_category": street_vendor.street_vendor_category.name
+            }
+        })
     return Authorize.create_access_token(subject=user.id, user_claims={
         "is_street_vendor": user.is_street_vendor,
         "name": user.name,
@@ -52,6 +61,8 @@ def create_user(user: UserCreate, db: Session):
 def get_user(id: str, db: Session):
     return db.query(User).filter(User.id == id).first()
 
-
 def get_user_by_email(email: str, db: Session):
     return db.query(User).filter(User.email == email).first()
+
+def get_street_vendor_by_id(user: str, db: Session):
+    return db.query(StreetVendor).filter(StreetVendor.user == user).first()

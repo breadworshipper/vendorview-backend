@@ -1,5 +1,5 @@
 import redis
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, Query
 from typing import Dict, List
 import json
 
@@ -10,15 +10,22 @@ from src.models.auth import StreetVendorCategoryEnum
 from src.schemas.tracking import Coordinates
 from src.utils.tracking import add_coordinates, get_nearby
 
+from src.utils.auth import decode_token
+
 router = APIRouter(prefix="/api/v1/tracking")
 
-active_connections: Dict[str, List[WebSocket]] = {"street_vendor_room": [], "user_room": []}
+active_connections: Dict[str, List[WebSocket]] = {"street_vendor_room": []}
 
 
 @router.websocket("/street-vendor")
-async def street_vendor_websocket(websocket: WebSocket):
+async def street_vendor_websocket(websocket: WebSocket, token: str = Query(...), rd: redis.Redis = Depends(get_redis)):
     try:
-        # Authorize here
+        token = decode_token(token)
+
+        if token["is_street_vendor"] is False:
+            await websocket.send_text("Unauthorized")
+            await websocket.close()
+            return
 
         active_connections["street_vendor_room"].append(websocket)
 
@@ -28,16 +35,9 @@ async def street_vendor_websocket(websocket: WebSocket):
         while True:
             try:
                 data = await websocket.receive_text()
-                message_data = {
-                    "data": data,
-                    "street_vendor_id": 1
-                }
-                json_message = json.dumps(message_data)
+                data_json = json.loads(data)
 
-                print(active_connections)
-                if len(active_connections["user_room"]) != 0:
-                    for connection in active_connections["user_room"]:
-                        await connection.send_text(json_message)
+                add_coordinates(rd, "street_vendor_locations", data_json["lat"], data_json["lon"], token["name"], token["street_vendor"]["street_vendor_category"], token["sub"])
 
             except WebSocketDisconnect:
                 active_connections["street_vendor_room"].remove(websocket)
