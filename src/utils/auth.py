@@ -26,7 +26,8 @@ def hash_password(password):
 
 
 def create_access_token(user: UserLogin, Authorize: AuthJWT, db: Session):
-    user = get_user(user.email, db)
+    user = get_user_by_email(user.email, db)
+    print(SECRET_KEY)
     return Authorize.create_access_token(subject=user.id)
 
 
@@ -40,3 +41,7 @@ def decode_token(token: str):
 
 def get_user(id: str, db: Session):
     return db.query(User).filter(User.id == id).first()
+
+
+def get_user_by_email(email: str, db: Session):
+    return db.query(User).filter(User.email == email).first()
