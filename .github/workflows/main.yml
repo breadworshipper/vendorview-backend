@@ -31,11 +31,10 @@ jobs:
       with:
         context: .
         push: ${{ github.event_name == 'push' }}
-        tags: ${{ secrets.DOCKER_USERNAME }}/ccrefrigeratorapi:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/nahiar:latest
         build-args: |
-          ENV_FILE=${{ secrets.ENV_FILE }}
-          FIREBASE_SERVICE_ACCOUNT=${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          GCP_SERVICE_ACCOUNT=${{ secrets.GCP_SERVICE_ACCOUNT }}
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
 
     - name: Deploy to VM
       if: github.event_name == 'push'
