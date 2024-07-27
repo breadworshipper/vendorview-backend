@@ -30,4 +30,4 @@ class StreetVendor(Base):
     
     user = Column(ForeignKey("users.id"), primary_key=True)
     street_vendor_name = Column(String)
-    stree_vendor_category = Column(SQLAlchemyEnum(StreetVendorCategoryEnum, name="street_vendor_category_enum"))
+    street_vendor_category = Column(SQLAlchemyEnum(StreetVendorCategoryEnum, name="street_vendor_category_enum"))
