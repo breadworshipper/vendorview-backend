@@ -9,8 +9,8 @@ COPY ./src /app/src
 # COPY .env /app/.env
 
 # In GitHub Actions, make .env file and insert the environment variables
-RUN echo "DATABASE_URL=${DATABASE_URL}" >> / app/.env && \
-    echo "JWT_SECRET=${JWT_SECRET}" >> /app/.env && \
+RUN echo "DATABASE_URL=${DATABASE_URL}" >> /app/.env && \
+    echo "JWT_SECRET=${JWT_SECRET}" >> /app/.env
 
 # Set the working directory
 WORKDIR /app
