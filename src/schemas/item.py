@@ -7,7 +7,6 @@ class Item(BaseModel):
     name: str
     description: str
     price: float
-    street_vendor: int
     image_base64: Optional[str] = ""
 
 
