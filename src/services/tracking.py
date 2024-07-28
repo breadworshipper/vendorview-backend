@@ -34,7 +34,7 @@ async def street_vendor_websocket_service(websocket: WebSocket, token: dict, rd,
                 data_json = json.loads(data)
 
                 category = StreetVendorCategoryEnum(my_dict[token["street_vendor"]["street_vendor_category"]])
-                add_coordinates(rd, "street_vendor_locations", data_json["lat"], data_json["lon"], token["name"], category, token["sub"])
+                add_coordinates(rd, "street_vendor_locations", data_json["lat"], data_json["lon"], token["street_vendor"]["street_vendor_name"], category, token["sub"])
 
             except WebSocketDisconnect:
                 active_connections["street_vendor_room"].remove(websocket)
