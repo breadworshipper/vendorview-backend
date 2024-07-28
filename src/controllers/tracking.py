@@ -45,7 +45,7 @@ async def disconnect_street_vendor(rd: redis.Redis = Depends(get_redis), Authori
     Authorize.jwt_required()
     token = Authorize.get_raw_jwt()
     name = token["street_vendor"]["street_vendor_name"]
-    return remove_coordinates(rd, "street_vendor_locations", name, Authorize.get_jwt_subject())
+    return remove_coordinates(rd, "street_vendor_locations", name, Authorize.get_jwt_subject(), token)
 
 
 @router.get("/seed-coordinates")
