@@ -8,15 +8,28 @@ from redis import Redis
 from src.database import get_redis
 from src.models.auth import StreetVendorCategoryEnum
 from src.schemas.tracking import Coordinates
-from src.utils.tracking import add_coordinates, get_nearby
+from src.utils.tracking import add_coordinates, get_nearby, remove_coordinates
 from src.services.tracking import street_vendor_websocket_service
 from src.models.auth import StreetVendorCategoryEnum
 from src.utils.auth import decode_token
+from fastapi_jwt_auth import AuthJWT
 
 router = APIRouter(prefix="/api/v1/tracking")
 
 active_connections: Dict[str, List[WebSocket]] = {"street_vendor_room": []}
 
+my_dict = {
+    "makanan_dan_minuman": 1,
+    "pakaian_dan_aksesoris": 2,
+    "buah_dan_sayuran": 3,
+    "barang_bekas_dan_barang_antik": 4,
+    "mainan_anak_anak": 5,
+    "jasa" : 6,
+    "kerajinan_tangan" : 7,
+    "produk_kesehatan_dan_kecantikan" : 8,
+    "peralatan_rumah_tangga" : 9,
+    "barang_elektronik" : 10
+}
 
 @router.websocket("/street-vendor")
 async def street_vendor_websocket(websocket: WebSocket, token: str = Query(...), rd: redis.Redis = Depends(get_redis)):
@@ -27,9 +40,12 @@ async def street_vendor_websocket(websocket: WebSocket, token: str = Query(...),
         await websocket.send_text(f"Error : {e.message}")
         await websocket.close()
 
-# @router.delete("/disconnect-street-vendor/{vendor_id}")
-# async def disconnect_street_vendor(rd: redis.Redis = Depends(get_redis)):
-#     rd.delete
+@router.delete("/disconnect-street-vendor/{vendor_id}")
+async def disconnect_street_vendor(rd: redis.Redis = Depends(get_redis), Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    token = Authorize.get_raw_jwt()
+    name = token["street_vendor"]["street_vendor_name"]
+    return remove_coordinates(rd, "street_vendor_locations", name, Authorize.get_jwt_subject())
 
 
 @router.get("/seed-coordinates")
