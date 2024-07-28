@@ -40,7 +40,7 @@ async def street_vendor_websocket(websocket: WebSocket, token: str = Query(...),
         await websocket.send_text(f"Error : {e.message}")
         await websocket.close()
 
-@router.delete("/disconnect-street-vendor/{vendor_id}")
+@router.delete("/disconnect-street-vendor")
 async def disconnect_street_vendor(rd: redis.Redis = Depends(get_redis), Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     token = Authorize.get_raw_jwt()

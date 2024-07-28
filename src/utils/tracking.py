@@ -24,7 +24,6 @@ def add_coordinates(rd: redis.Redis, key: str, lat: float, lon: float, name: str
 def remove_coordinates(rd: redis.Redis, key: str, name: str, vendor_id: str, token: dict):
     category = StreetVendorCategoryEnum(my_dict[token["street_vendor"]["street_vendor_category"]])
     member = ";".join([str(vendor_id), name, category.name, str(category.value)])
-    print(member)
     return rd.zrem(key, member)
 
 
