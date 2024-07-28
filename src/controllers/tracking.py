@@ -10,7 +10,7 @@ from src.models.auth import StreetVendorCategoryEnum
 from src.schemas.tracking import Coordinates
 from src.utils.tracking import add_coordinates, get_nearby
 from src.services.tracking import street_vendor_websocket_service
-
+from src.models.auth import StreetVendorCategoryEnum
 from src.utils.auth import decode_token
 
 router = APIRouter(prefix="/api/v1/tracking")
@@ -26,6 +26,10 @@ async def street_vendor_websocket(websocket: WebSocket, token: str = Query(...),
     except Exception as e:
         await websocket.send_text(f"Error : {e.message}")
         await websocket.close()
+
+# @router.delete("/disconnect-street-vendor/{vendor_id}")
+# async def disconnect_street_vendor(rd: redis.Redis = Depends(get_redis)):
+#     rd.delete
 
 
 @router.get("/seed-coordinates")
