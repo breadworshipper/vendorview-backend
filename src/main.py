@@ -17,8 +17,7 @@ app.include_router(auth_router)
 app.include_router(items_router)
 
 origins = [
-    "http://localhost:3000",
-    "https://vendorview-frontend.vercel.app/",
+    "*"
 ]
 
 app.add_middleware(
